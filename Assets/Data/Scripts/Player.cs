@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     private float mSpeedControl = 25f;
     float verticalVelocity = -10f;
     private float _movementForce = 10f;
-    private PLAYER_STATE playerState = PLAYER_STATE.NONE;
+    private PLAYER_STATE playerState = PLAYER_STATE.RUN;
 
     enum PLAYER_STATE
     {
@@ -36,12 +36,34 @@ public class Player : MonoBehaviour
         }
 
         mMoveVector = Vector3.zero;
-        //mMoveVector.x = Input.GetAxisRaw("Horizontal") * mSpeed;
-        mMoveVector.x = Input.GetAxis("Mouse X") * mSpeedControl;
-        mMoveVector.y = verticalVelocity;
+        mMoveVector.x = Input.GetAxisRaw("Horizontal") * mSpeed;
         mMoveVector.z = 0;
+        switch (playerState)
+        {
+            case PLAYER_STATE.RUN:
+                mMoveVector.z = mSpeed;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    SetState(PLAYER_STATE.CONTROL);
+                }
+                break;
+
+            case PLAYER_STATE.CONTROL:
+                mMoveVector.x = Input.GetAxis("Mouse X") * mSpeedControl;
+                if (Input.GetMouseButtonUp(0))
+                {
+                    SetState(PLAYER_STATE.RUN);
+                }
+                break;
+        }
+        mMoveVector.y = verticalVelocity;
         
         characterController.Move(mMoveVector * Time.deltaTime);
+    }
+
+    private void SetState(PLAYER_STATE state)
+    {
+        playerState = state;
     }
 
     private void UpdateColor(CHAR_COLOR charColor)
