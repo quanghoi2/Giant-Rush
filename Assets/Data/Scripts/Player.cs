@@ -6,11 +6,22 @@ public class Player : MonoBehaviour
 {
     public SkinnedMeshRenderer sm;
     public List<Material> listColor;
-    public Rigidbody mRigidBody;
+    public CharacterController characterController;
 
     private CHAR_COLOR mColor = CHAR_COLOR.GREEN;
     private Vector3 mMoveVector;
     private float mSpeed = 5f;
+    private float mSpeedControl = 25f;
+    float verticalVelocity = -10f;
+    private float _movementForce = 10f;
+    private PLAYER_STATE playerState = PLAYER_STATE.NONE;
+
+    enum PLAYER_STATE
+    {
+        NONE,
+        RUN,
+        CONTROL,
+    }
 
     private void Update()
     {
@@ -21,15 +32,16 @@ public class Player : MonoBehaviour
             {
                 mColor = CHAR_COLOR.GREEN;
             }
-            //UpdateColor(mColor);
+            UpdateColor(mColor);
         }
 
         mMoveVector = Vector3.zero;
-        mMoveVector.x = Input.GetAxisRaw("Horizontal") * mSpeed * Time.deltaTime;
+        //mMoveVector.x = Input.GetAxisRaw("Horizontal") * mSpeed;
+        mMoveVector.x = Input.GetAxis("Mouse X") * mSpeedControl;
+        mMoveVector.y = verticalVelocity;
         mMoveVector.z = 0;
-        mMoveVector.y = 0;
-        //mRigidBody.AddForce(mMoveVector * Time.deltaTime, ForceMode.VelocityChange);
-        mRigidBody.velocity += mMoveVector;
+        
+        characterController.Move(mMoveVector * Time.deltaTime);
     }
 
     private void UpdateColor(CHAR_COLOR charColor)
