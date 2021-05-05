@@ -16,6 +16,9 @@ public class CameraMotor : MonoBehaviour
     private Vector3 moveOffset = new Vector3(0, 0, 5);
     private float mSpeed = 10f;
 
+    private Vector3 FightPos = new Vector3(4.5f, 4, 145.7f);
+    private Quaternion FightRot = Quaternion.Euler(26, -90, 0);
+    private float mSpeedFight = 3f;
     private float transition = 0;
     private float timeAnim = 1f;
 
@@ -44,6 +47,10 @@ public class CameraMotor : MonoBehaviour
                 moveVector.x = PlayPos.x;
                 moveVector.y = PlayPos.y;
                 transform.position = Vector3.Lerp(transform.position, moveVector, Time.deltaTime);
+                break;
+            case STATE.END_RUN:
+                transform.position = Vector3.Lerp(transform.position, FightPos, mSpeedFight * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, FightRot, mSpeedFight * Time.deltaTime);
                 break;
         }
     }

@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private Vector3 mMoveVector;
     private Vector3 mRotVector;
     private float mSpeed = 5f;
+    private float mSpeedEndRun = 2.5f;
     [SerializeField]
     private float mRotSpeed = 500f;
     [SerializeField]
@@ -22,17 +23,11 @@ public class Player : MonoBehaviour
     private float _movementForce = 10f;
     [SerializeField]
     private PLAYER_STATE playerState = PLAYER_STATE.READY;
+    private string mAnimName;
 
     const float MAX_ROTATION_Y = 0.15f;
     const float MAX_X = 3f;
-    const float SCALE_UNIT = 0.1f;
-
-    enum PLAYER_STATE
-    {
-        READY,
-        RUN,
-        CONTROL,
-    }
+    const float SCALE_UNIT = 0.1f;    
 
     private void Start()
     {
@@ -57,6 +52,34 @@ public class Player : MonoBehaviour
                 if(Input.GetMouseButtonDown(0))
                 {
                     SetState(PLAYER_STATE.CONTROL);
+                }
+
+                if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    switch(mAnimName)
+                    {
+                        case CHAR_ANIM.IDLE:
+                            AnimPlay(CHAR_ANIM.READY_HIT);
+                            break;
+                        case CHAR_ANIM.READY_HIT:
+                            AnimPlay(CHAR_ANIM.HIT);
+                            break;
+                        case CHAR_ANIM.HIT:
+                            AnimPlay(CHAR_ANIM.HITTED);
+                            break;
+                        case CHAR_ANIM.HITTED:
+                            AnimPlay(CHAR_ANIM.KICK);
+                            break;
+                        case CHAR_ANIM.KICK:
+                            AnimPlay(CHAR_ANIM.KNOCK_OUT);
+                            break;
+                        case CHAR_ANIM.KNOCK_OUT:
+                            AnimPlay(CHAR_ANIM.READY_HIT);
+                            break;
+                        default:
+                            AnimPlay(CHAR_ANIM.READY_HIT);
+                            break;
+                    }
                 }
                 break;
             case PLAYER_STATE.RUN:
@@ -95,6 +118,25 @@ public class Player : MonoBehaviour
                     SetState(PLAYER_STATE.RUN);
                 }
                 break;
+
+            case PLAYER_STATE.END_RUN:
+                transform.position = Vector3.Lerp(transform.position, LevelManager.Instance.transPlayer.position, mSpeedEndRun * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, mRotSpeed * Time.deltaTime);
+                float distance = Vector3.Distance(transform.position, LevelManager.Instance.transPlayer.position);
+                if( distance <= 0.1f)
+                {
+                    transform.position = LevelManager.Instance.transPlayer.position;
+                    SetState(PLAYER_STATE.READY_HIT);
+                    GameManager.Instance.State = STATE.FIGHT;
+                }
+                break;
+
+            case PLAYER_STATE.READY_HIT:
+                if(Input.GetMouseButtonDown(0))
+                {
+                    SetState(PLAYER_STATE.HIT);
+                }
+                break;
         }
         
     }
@@ -102,10 +144,12 @@ public class Player : MonoBehaviour
     private void SetState(PLAYER_STATE state)
     {
         playerState = state;
+        GameManager.Instance.playerState = state;
         switch(playerState)
         {
             case PLAYER_STATE.READY:
-                mAnimator.Play(CHAR_ANIM.IDLE);
+                AnimPlay(CHAR_ANIM.IDLE);
+                //mAnimator.Play(CHAR_ANIM.IDLE);
                 break;
 
             case PLAYER_STATE.CONTROL:
@@ -119,6 +163,17 @@ public class Player : MonoBehaviour
                     GameManager.Instance.State = STATE.PLAY_GAME;
                 }
                 break;
+            case PLAYER_STATE.END_RUN:
+
+                break;
+
+            case PLAYER_STATE.READY_HIT:
+                AnimPlay(CHAR_ANIM.READY_HIT);
+                break;
+
+            case PLAYER_STATE.HIT:
+                AnimPlay(CHAR_ANIM.HIT);
+                break;                
         }
     }
 
@@ -163,7 +218,20 @@ public class Player : MonoBehaviour
             case TAG.DIAMOND:
                 Destroy(other.gameObject);
                 break;
+
+            case TAG.END_RUN:
+                if(playerState != PLAYER_STATE.END_RUN)
+                {
+                    SetState(PLAYER_STATE.END_RUN);
+                    GameManager.Instance.State = STATE.END_RUN;
+                }
+                break;
         }
     }
 
+    private void AnimPlay(string animName)
+    {
+        mAnimName = animName;
+        mAnimator.Play(animName);
+    }
 }

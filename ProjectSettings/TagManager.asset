@@ -8,6 +8,8 @@ TagManager:
   - Color
   - Station
   - Diamond
+  - EndRun
+  - Boss
   layers:
   - Default
   - TransparentFX
