@@ -4,6 +4,9 @@ using UnityEngine;
 
 public static class Define
 {
+    public const float TIME_FINISH_HIT = 1.02f;
+    public const float TIME_FINISH_KICK = 0.2f;
+    public const int LAST_HIT = 1;
 }
 
 public enum CHAR_COLOR

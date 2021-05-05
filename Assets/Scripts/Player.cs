@@ -24,10 +24,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private PLAYER_STATE playerState = PLAYER_STATE.READY;
     private string mAnimName;
+    private Timer timerControl = new Timer();
 
     const float MAX_ROTATION_Y = 0.15f;
     const float MAX_X = 3f;
-    const float SCALE_UNIT = 0.1f;    
+    const float SCALE_UNIT = 0.1f;        
 
     private void Start()
     {
@@ -132,9 +133,48 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.READY_HIT:
-                if(Input.GetMouseButtonDown(0))
+                if(GameManager.Instance.playerState == PLAYER_STATE.READY_HIT && GameManager.Instance.bossState == BOSS_STATE.READY_HIT)
                 {
-                    SetState(PLAYER_STATE.HIT);
+                    if(Input.GetMouseButtonDown(0))
+                    {
+                        if(GameManager.Instance.BossHP == Define.LAST_HIT)
+                        {
+                            SetState(PLAYER_STATE.KICK);
+                        }
+                        else
+                        {
+                            SetState(PLAYER_STATE.HIT);
+                        }
+                    }
+                }
+                break;
+
+            case PLAYER_STATE.HIT:
+                timerControl.Update(Time.deltaTime);
+                if(timerControl.JustFinished())
+                {
+                    SetState(PLAYER_STATE.FINISH_HIT);
+                }
+                break;
+
+            case PLAYER_STATE.FINISH_HIT:
+                if (!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.HIT))
+                {
+                    SetState(PLAYER_STATE.READY_HIT);
+                }
+                break;
+
+            case PLAYER_STATE.KICK:
+                timerControl.Update(Time.deltaTime);
+                if(timerControl.JustFinished())
+                {
+                    SetState(PLAYER_STATE.FINISH_KICK);
+                }
+                break;
+            case PLAYER_STATE.FINISH_KICK:
+                if(!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.KICK))
+                {
+                    SetState(PLAYER_STATE.READY_HIT);
                 }
                 break;
         }
@@ -149,7 +189,6 @@ public class Player : MonoBehaviour
         {
             case PLAYER_STATE.READY:
                 AnimPlay(CHAR_ANIM.IDLE);
-                //mAnimator.Play(CHAR_ANIM.IDLE);
                 break;
 
             case PLAYER_STATE.CONTROL:
@@ -168,12 +207,25 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.READY_HIT:
+                GameManager.Instance.bossState = BOSS_STATE.READY_HIT;
                 AnimPlay(CHAR_ANIM.READY_HIT);
                 break;
 
             case PLAYER_STATE.HIT:
+                timerControl.SetDuration(Define.TIME_FINISH_HIT);
                 AnimPlay(CHAR_ANIM.HIT);
-                break;                
+                break;
+            case PLAYER_STATE.FINISH_HIT:
+                GameManager.Instance.BossHitted();
+                break;
+
+            case PLAYER_STATE.KICK:
+                timerControl.SetDuration(Define.TIME_FINISH_KICK);
+                AnimPlay(CHAR_ANIM.KICK);
+                break;
+            case PLAYER_STATE.FINISH_KICK:
+                GameManager.Instance.bossState = BOSS_STATE.KNOCK_OUT;
+                break;
         }
     }
 

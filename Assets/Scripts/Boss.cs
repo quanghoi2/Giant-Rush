@@ -62,6 +62,16 @@ public class Boss : MonoBehaviour
                 break;
 
             case BOSS_STATE.READY_HIT:
+                SetState(GameManager.Instance.bossState);                
+                break;
+            case BOSS_STATE.HITTED:
+                if (!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.HITTED))
+                {
+                    SetState(BOSS_STATE.READY_HIT);
+                }
+                break;
+
+            case BOSS_STATE.KNOCK_OUT:
 
                 break;
         }
@@ -76,11 +86,26 @@ public class Boss : MonoBehaviour
             case BOSS_STATE.IDLE:
 
                 break;
+
+            case BOSS_STATE.READY_HIT:
+                GameManager.Instance.bossState = BOSS_STATE.READY_HIT;
+                AnimPlay(CHAR_ANIM.READY_HIT);
+                break;
+            case BOSS_STATE.HITTED:                
+                AnimPlay(CHAR_ANIM.HITTED);
+                break;
+            case BOSS_STATE.KNOCK_OUT:
+                AnimPlay(CHAR_ANIM.KNOCK_OUT);
+                break;
         }
     }
 
     private void AnimPlay(string animName)
     {
+        if(mAnimName == animName)
+        {
+            return;
+        }
         mAnimName = animName;
         mAnimator.Play(animName);
     }
