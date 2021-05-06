@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     private Vector3 mMoveVector;
     private Vector3 mRotVector;
     private float mSpeed = 5f;
-    private float mSpeedEndRun = 2.5f;
+    private float mSpeedEndRun = 3f;
     [SerializeField]
     private float mRotSpeed = 500f;
     [SerializeField]
@@ -121,10 +121,19 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.END_RUN:
-                transform.position = Vector3.Lerp(transform.position, LevelManager.Instance.transPlayer.position, mSpeedEndRun * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, LevelManager.Instance.transPlayer.position, mSpeedEndRun * Time.deltaTime);
+                //transform.position = Vector3.Lerp(transform.position, LevelManager.Instance.transPlayer.position, mSpeedEndRun * Time.deltaTime);
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, mRotSpeed * Time.deltaTime);
                 float distance = Vector3.Distance(transform.position, LevelManager.Instance.transPlayer.position);
-                if( distance <= 0.1f)
+                if (distance <= 0.5f)
+                {
+                    if(GameManager.Instance.State != STATE.PRE_FIGHT)
+                    {
+                        GameManager.Instance.State = STATE.PRE_FIGHT;
+                        CameraMgr.Instance.UpdateCamera();
+                    }
+                }
+                if ( distance <= 0.1f)
                 {
                     transform.position = LevelManager.Instance.transPlayer.position;
                     SetState(PLAYER_STATE.READY_HIT);
@@ -222,6 +231,8 @@ public class Player : MonoBehaviour
                 if(GameManager.Instance.State == STATE.READY)
                 {
                     GameManager.Instance.State = STATE.START_GAME;
+                    CameraMgr.Instance.timerControl.SetDuration(Define.TIME_CAMERA_START);
+                    CameraMgr.Instance.UpdateCamera();
                 }
                 else if (GameManager.Instance.State == STATE.START_GAME)
                 {
@@ -319,6 +330,7 @@ public class Player : MonoBehaviour
                 {
                     SetState(PLAYER_STATE.END_RUN);
                     GameManager.Instance.State = STATE.END_RUN;
+                    CameraMgr.Instance.UpdateCamera();
                 }
                 break;
         }

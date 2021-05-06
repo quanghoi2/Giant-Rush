@@ -33,25 +33,25 @@ public class CameraMotor : MonoBehaviour
     {
         switch(GameManager.Instance.State)
         {
-            case STATE.START_GAME:
-                transform.position = Vector3.Lerp(transform.position, PlayPos, Time.deltaTime);
-                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(PlayRot), transition);
-                transition += Time.deltaTime * mSpeed / timeAnim;
-                if(transition > 1)
-                {
-                    GameManager.Instance.State = STATE.PLAY_GAME;
-                }
-                break;
+            //case STATE.START_GAME:
+            //    transform.position = Vector3.Lerp(transform.position, PlayPos, Time.deltaTime);
+            //    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(PlayRot), transition);
+            //    transition += Time.deltaTime * mSpeed / timeAnim;
+            //    if(transition > 1)
+            //    {
+            //        GameManager.Instance.State = STATE.PLAY_GAME;
+            //    }
+            //    break;
             case STATE.PLAY_GAME:
                 moveVector = lookAt.position + PlayPos + moveOffset;
                 moveVector.x = PlayPos.x;
                 moveVector.y = PlayPos.y;
                 transform.position = Vector3.Lerp(transform.position, moveVector, Time.deltaTime);
                 break;
-            case STATE.END_RUN:
-                transform.position = Vector3.Lerp(transform.position, FightPos, mSpeedFight * Time.deltaTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation, FightRot, mSpeedFight * Time.deltaTime);
-                break;
+            //case STATE.END_RUN:
+            //    transform.position = Vector3.Lerp(transform.position, FightPos, mSpeedFight * Time.deltaTime);
+            //    transform.rotation = Quaternion.Slerp(transform.rotation, FightRot, mSpeedFight * Time.deltaTime);
+            //    break;
         }
     }
 }

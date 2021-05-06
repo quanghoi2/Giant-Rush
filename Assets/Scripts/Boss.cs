@@ -61,7 +61,7 @@ public class Boss : MonoBehaviour
             case BOSS_STATE.IDLE:
                 if(GameManager.Instance.State == STATE.FIGHT)
                 {
-                    SetState(BOSS_STATE.READY_HIT);
+                    SetState(BOSS_STATE.READY_HIT);                    
                 }
                 break;
 
