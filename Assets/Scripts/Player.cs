@@ -149,7 +149,15 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    SetState(GameManager.Instance.playerState);
+                    switch(GameManager.Instance.bossState)
+                    {
+                        case BOSS_STATE.FINISH_HIT:
+                            SetState(PLAYER_STATE.HITTED);
+                            break;
+                        case BOSS_STATE.FINISH_KICK:
+                            SetState(PLAYER_STATE.KNOCK_OUT);
+                            break;
+                    }
                 }
                 break;
 
@@ -225,32 +233,40 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.READY_HIT:
-                GameManager.Instance.bossState = BOSS_STATE.READY_HIT;
+                GameManager.Instance.playerState = PLAYER_STATE.READY_HIT;
                 AnimPlay(CHAR_ANIM.READY_HIT);
                 break;
 
             case PLAYER_STATE.HIT:
+                GameManager.Instance.playerState = PLAYER_STATE.HIT;
                 timerControl.SetDuration(Define.TIME_FINISH_HIT);
                 AnimPlay(CHAR_ANIM.HIT);
                 break;
             case PLAYER_STATE.FINISH_HIT:
+                GameManager.Instance.playerState = PLAYER_STATE.FINISH_HIT;
                 GameManager.Instance.BossHitted();
+                if (GameManager.Instance.IsBossLastHit())
+                {
+                    LevelManager.Instance.ActiveBoardMultiScore();
+                }
                 break;
 
             case PLAYER_STATE.KICK:
+                GameManager.Instance.playerState = PLAYER_STATE.KICK;
                 timerControl.SetDuration(Define.TIME_FINISH_KICK);
                 AnimPlay(CHAR_ANIM.KICK);
                 break;
             case PLAYER_STATE.FINISH_KICK:
-                GameManager.Instance.bossState = BOSS_STATE.KNOCK_OUT;
+                GameManager.Instance.playerState = PLAYER_STATE.FINISH_KICK;
                 break;
 
             case PLAYER_STATE.HITTED:
+                GameManager.Instance.playerState = PLAYER_STATE.HITTED;
                 AnimPlay(CHAR_ANIM.HITTED);
                 break;
 
             case PLAYER_STATE.KNOCK_OUT:
-                mAnimator.applyRootMotion = true;
+                GameManager.Instance.playerState = PLAYER_STATE.KNOCK_OUT;
                 AnimPlay(CHAR_ANIM.KNOCK_OUT);
                 break;
         }

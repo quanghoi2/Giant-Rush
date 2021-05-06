@@ -8,6 +8,8 @@ public class GameManager : Singleton<GameManager>
 
     public PLAYER_STATE playerState;
     public BOSS_STATE bossState;
+    [HideInInspector]
+    public int mMultiScore;
 
     private int mBossHp = 4;
     private int mPlayerHp = 4;

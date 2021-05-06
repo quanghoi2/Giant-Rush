@@ -6,9 +6,12 @@ public class Boss : MonoBehaviour
 {
     public Animator mAnimator;
 
+    [SerializeField]
     private BOSS_STATE bossState;
     private string mAnimName;
     private Timer timerControl = new Timer();
+    private Vector3 targetMultiScorePos;
+    private int indexScore = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -80,7 +83,15 @@ public class Boss : MonoBehaviour
                 }
                 else
                 {
-                    SetState(GameManager.Instance.bossState);                
+                    switch(GameManager.Instance.playerState)
+                    {
+                        case PLAYER_STATE.FINISH_HIT:
+                            SetState(BOSS_STATE.HITTED);
+                            break;
+                        case PLAYER_STATE.FINISH_KICK:
+                            SetState(BOSS_STATE.KNOCK_OUT);
+                            break;
+                    }
                 }
                 break;
             case BOSS_STATE.HITTED:
@@ -91,7 +102,15 @@ public class Boss : MonoBehaviour
                 break;
 
             case BOSS_STATE.KNOCK_OUT:
-
+                transform.position = Vector3.Lerp(transform.position, targetMultiScorePos, Time.deltaTime);
+                if(transform.position.z >= LevelManager.Instance.listMultiScore[indexScore].transform.position.z - 0.5f)
+                {
+                    if(!LevelManager.Instance.listMultiScore[indexScore].isActive)
+                    {
+                        LevelManager.Instance.listMultiScore[indexScore].UpdateActive();
+                        indexScore++;
+                    }
+                }
                 break;
 
             case BOSS_STATE.HIT:
@@ -140,32 +159,47 @@ public class Boss : MonoBehaviour
                 AnimPlay(CHAR_ANIM.READY_HIT);
                 timerControl.SetDuration(Define.TIME_AUTO_ATTACK);
                 break;
-            case BOSS_STATE.HITTED:                
+            case BOSS_STATE.HITTED:
+                GameManager.Instance.bossState = BOSS_STATE.HITTED;
                 AnimPlay(CHAR_ANIM.HITTED);
                 break;
             case BOSS_STATE.KNOCK_OUT:
-                mAnimator.applyRootMotion = true;
+                GameManager.Instance.bossState = BOSS_STATE.KNOCK_OUT;
                 AnimPlay(CHAR_ANIM.KNOCK_OUT);
+                GameManager.Instance.mMultiScore = Random.Range(Define.MULTI_SCORE_LOCK_ID / 2, Define.MULTI_SCORE_LOCK_ID - 1);
+                Debug.Log("GameManager.Instance.mMultiScore:" + GameManager.Instance.mMultiScore);
+                for(int i = 0; i < LevelManager.Instance.listMultiScore.Count; i++)
+                {
+                    if(LevelManager.Instance.listMultiScore[i].ID == GameManager.Instance.mMultiScore)
+                    {
+                        targetMultiScorePos = LevelManager.Instance.listMultiScore[i].transform.position;
+                        //targetMultiScorePos.z -= 0.5f;
+                    }
+                }
                 break;
 
             case BOSS_STATE.HIT:
+                GameManager.Instance.bossState = BOSS_STATE.HIT;
                 timerControl.SetDuration(Define.TIME_FINISH_HIT);
                 AnimPlay(CHAR_ANIM.HIT);
                 break;
 
             case BOSS_STATE.FINISH_HIT:
                 GameManager.Instance.PlayerHitted();
-                GameManager.Instance.playerState = PLAYER_STATE.HITTED;
+                //GameManager.Instance.playerState = PLAYER_STATE.HITTED;
+                GameManager.Instance.bossState = BOSS_STATE.FINISH_HIT;
                 break;
 
             case BOSS_STATE.KICK:
                 timerControl.SetDuration(Define.TIME_FINISH_KICK);
                 AnimPlay(CHAR_ANIM.KICK);
+                GameManager.Instance.bossState = BOSS_STATE.KICK;
                 break;
 
             case BOSS_STATE.FINISH_KICK:
+                GameManager.Instance.bossState = BOSS_STATE.FINISH_KICK;
                 GameManager.Instance.PlayerHitted();
-                GameManager.Instance.playerState = PLAYER_STATE.KNOCK_OUT;
+                //GameManager.Instance.playerState = PLAYER_STATE.KNOCK_OUT;
                 break;
         }
     }
