@@ -6,7 +6,7 @@ public static class Define
 {
     public const float TIME_FINISH_HIT = 1.02f;
     public const float TIME_FINISH_KICK = 0.2f;
-    public const int LAST_HIT = 1;
+    public const float TIME_AUTO_ATTACK = 1.5f;
 }
 
 public enum CHAR_COLOR
@@ -60,6 +60,7 @@ public enum PLAYER_STATE
     KICK,
     FINISH_KICK,
     KNOCK_OUT,
+    GAME_OVER,
 }
 
 public enum BOSS_STATE

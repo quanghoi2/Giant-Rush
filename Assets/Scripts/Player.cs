@@ -137,7 +137,7 @@ public class Player : MonoBehaviour
                 {
                     if(Input.GetMouseButtonDown(0))
                     {
-                        if(GameManager.Instance.BossHP == Define.LAST_HIT)
+                        if(GameManager.Instance.IsBossLastHit())
                         {
                             SetState(PLAYER_STATE.KICK);
                         }
@@ -146,6 +146,10 @@ public class Player : MonoBehaviour
                             SetState(PLAYER_STATE.HIT);
                         }
                     }
+                }
+                else
+                {
+                    SetState(GameManager.Instance.playerState);
                 }
                 break;
 
@@ -175,6 +179,20 @@ public class Player : MonoBehaviour
                 if(!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.KICK))
                 {
                     SetState(PLAYER_STATE.READY_HIT);
+                }
+                break;
+
+            case PLAYER_STATE.HITTED:
+                if(!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.HITTED))
+                {
+                    SetState(PLAYER_STATE.READY_HIT);
+                }
+                break;
+
+            case PLAYER_STATE.KNOCK_OUT:
+                if (!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.KNOCK_OUT))
+                {
+                    SetState(PLAYER_STATE.GAME_OVER);
                 }
                 break;
         }
@@ -225,6 +243,15 @@ public class Player : MonoBehaviour
                 break;
             case PLAYER_STATE.FINISH_KICK:
                 GameManager.Instance.bossState = BOSS_STATE.KNOCK_OUT;
+                break;
+
+            case PLAYER_STATE.HITTED:
+                AnimPlay(CHAR_ANIM.HITTED);
+                break;
+
+            case PLAYER_STATE.KNOCK_OUT:
+                mAnimator.applyRootMotion = true;
+                AnimPlay(CHAR_ANIM.KNOCK_OUT);
                 break;
         }
     }

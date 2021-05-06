@@ -12,6 +12,8 @@ public class GameManager : Singleton<GameManager>
     private int mBossHp = 4;
     private int mPlayerHp = 4;
 
+    const int LAST_HIT = 1;
+
     public STATE State
     {
         get { return mState; }
@@ -51,5 +53,28 @@ public class GameManager : Singleton<GameManager>
         {
             bossState = BOSS_STATE.HITTED;
         }
+    }
+
+    public void PlayerHitted()
+    {
+        PlayerHP -= 1;
+        if (PlayerHP == 0)
+        {
+            playerState = PLAYER_STATE.KNOCK_OUT;
+        }
+        else
+        {
+            playerState = PLAYER_STATE.HITTED;
+        }
+    }
+
+    public bool IsPlayerLastHit()
+    {
+        return mPlayerHp == LAST_HIT;
+    }
+
+    public bool IsBossLastHit()
+    {
+        return mBossHp == LAST_HIT;
     }
 }
