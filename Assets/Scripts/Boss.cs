@@ -61,7 +61,15 @@ public class Boss : MonoBehaviour
             case BOSS_STATE.IDLE:
                 if(GameManager.Instance.State == STATE.FIGHT)
                 {
-                    SetState(BOSS_STATE.READY_HIT);                    
+                    SetState(BOSS_STATE.PRE_READY_HIT);                    
+                }
+                break;
+
+            case BOSS_STATE.PRE_READY_HIT:
+                timerControl.Update(Time.deltaTime);
+                if(timerControl.JustFinished())
+                {
+                    SetState(BOSS_STATE.READY_HIT);
                 }
                 break;
 
@@ -152,6 +160,10 @@ public class Boss : MonoBehaviour
         {
             case BOSS_STATE.IDLE:
 
+                break;
+
+            case BOSS_STATE.PRE_READY_HIT:
+                timerControl.SetDuration(Define.TIME_PRE_READY_HIT);
                 break;
 
             case BOSS_STATE.READY_HIT:

@@ -9,6 +9,8 @@ public static class Define
     public const float TIME_AUTO_ATTACK = 1.5f;
     public const int MULTI_SCORE_LOCK_ID = 22;
     public const float TIME_CAMERA_START = 1f;
+    public const float TIME_PRE_READY_HIT = 2f;
+    public const float TIME_FOLLOW_BOSS_KNOCK_OUT = 1f;
 }
 
 public enum CHAR_COLOR
@@ -47,6 +49,7 @@ public enum STATE
     END_RUN,
     PRE_FIGHT,
     FIGHT,
+    BOSS_KNOCK_OUT,
 }
 
 public enum PLAYER_STATE
@@ -55,6 +58,7 @@ public enum PLAYER_STATE
     RUN,
     CONTROL,
     END_RUN,
+    PRE_READY_HIT,
     READY_HIT,
     HIT,
     FINISH_HIT,
@@ -69,6 +73,7 @@ public enum PLAYER_STATE
 public enum BOSS_STATE
 {
     IDLE,
+    PRE_READY_HIT,
     READY_HIT,
     HIT,
     FINISH_HIT,

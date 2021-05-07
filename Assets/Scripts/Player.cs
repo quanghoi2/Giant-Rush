@@ -131,13 +131,22 @@ public class Player : MonoBehaviour
                     {
                         GameManager.Instance.State = STATE.PRE_FIGHT;
                         CameraMgr.Instance.UpdateCamera();
+                        AnimPlay(CHAR_ANIM.READY_HIT);
                     }
                 }
                 if ( distance <= 0.1f)
                 {
                     transform.position = LevelManager.Instance.transPlayer.position;
-                    SetState(PLAYER_STATE.READY_HIT);
+                    SetState(PLAYER_STATE.PRE_READY_HIT);
                     GameManager.Instance.State = STATE.FIGHT;
+                }
+                break;
+
+            case PLAYER_STATE.PRE_READY_HIT:
+                timerControl.Update(Time.deltaTime);
+                if(timerControl.JustFinished())
+                {
+                    SetState(PLAYER_STATE.READY_HIT);
                 }
                 break;
 
@@ -243,6 +252,10 @@ public class Player : MonoBehaviour
 
                 break;
 
+            case PLAYER_STATE.PRE_READY_HIT:
+                timerControl.SetDuration(Define.TIME_PRE_READY_HIT);
+                break;
+
             case PLAYER_STATE.READY_HIT:
                 GameManager.Instance.playerState = PLAYER_STATE.READY_HIT;
                 AnimPlay(CHAR_ANIM.READY_HIT);
@@ -263,6 +276,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.KICK:
+                CameraMgr.Instance.UpdateCamera();
                 GameManager.Instance.playerState = PLAYER_STATE.KICK;
                 timerControl.SetDuration(Define.TIME_FINISH_KICK);
                 AnimPlay(CHAR_ANIM.KICK);

@@ -18,6 +18,15 @@ public class CameraMgr : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        for(int i = 0; i < listCamera.Count; i++)
+        {
+            listCamera[i].SetActive(i == 0);
+
+        }
+    }
+
     void Update()
     {
         switch (GameManager.Instance.State)

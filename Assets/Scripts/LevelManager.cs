@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public List<Material> listMatMultiSocre = new List<Material>();
     public ScoreBlock prefabScoreBlock;
     public ScoreBlockLock prefabScoreBlockLock;
+    public Boss mBoss;
 
     [HideInInspector]
     public List<ScoreBlock> listMultiScore = new List<ScoreBlock>();
@@ -30,7 +31,7 @@ public class LevelManager : MonoBehaviour
             {
                 ScoreBlockLock sbl = Instantiate(prefabScoreBlockLock, boardMultiScore);
                 sbl.ID = ID;
-                sbl.textMultiScore.text = 1 + MULTI_SCORE * ID + "";
+                sbl.textMultiScore.text = "X" + 1 + MULTI_SCORE * ID;
                 sbl.matActive = listMatMultiSocre[i];
                 sbl.UpdateActive();
                 Vector3 posSBL = sbl.transform.position;
@@ -40,7 +41,8 @@ public class LevelManager : MonoBehaviour
             
             ScoreBlock sb = Instantiate(prefabScoreBlock, boardMultiScore);
             sb.ID = ID;
-            sb.textMultiScore.text = 1 + MULTI_SCORE * ID + "";
+            string multiScore = "X" + 1 + MULTI_SCORE * ID;
+            sb.SetTextMultiScore(multiScore);
             sb.matActive = listMatMultiSocre[i];
             Vector3 pos = sb.transform.position;
             pos.z += i;
