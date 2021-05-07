@@ -11,6 +11,7 @@ public static class Define
     public const float TIME_CAMERA_START = 1f;
     public const float TIME_PRE_READY_HIT = 2f;
     public const float TIME_FOLLOW_BOSS_KNOCK_OUT = 1f;
+    public const float TIME_DELAY_END_GAME = 2f;
 }
 
 public enum CHAR_COLOR
@@ -43,6 +44,7 @@ public static class TAG
 
 public enum STATE
 {
+    NONE,
     READY,
     START_GAME,
     PLAY_GAME,
@@ -50,10 +52,13 @@ public enum STATE
     PRE_FIGHT,
     FIGHT,
     BOSS_KNOCK_OUT,
+    PRE_LOAD,
+    LOAD,
 }
 
 public enum PLAYER_STATE
 {
+    NONE,
     READY,
     RUN,
     CONTROL,
@@ -68,18 +73,4 @@ public enum PLAYER_STATE
     FINISH_KICK,
     KNOCK_OUT,
     GAME_OVER,
-}
-
-public enum BOSS_STATE
-{
-    IDLE,
-    PRE_READY_HIT,
-    READY_HIT,
-    HIT,
-    FINISH_HIT,
-    HITTED,
-    FINISH_HITTED,
-    KICK,
-    FINISH_KICK,
-    KNOCK_OUT,
 }

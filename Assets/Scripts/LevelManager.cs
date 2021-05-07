@@ -27,11 +27,22 @@ public class LevelManager : MonoBehaviour
         for(int i = 0; i < Define.MULTI_SCORE_LOCK_ID; i++)
         {
             int ID = i + 1;
+            ScoreBlock sb = Instantiate(prefabScoreBlock, boardMultiScore);
+            sb.ID = ID;
+            float multiScore = 1 + MULTI_SCORE * ID;
+            string multiScoreText = "X" + multiScore;
+            sb.SetTextMultiScore(multiScoreText);
+            sb.matActive = listMatMultiSocre[i];
+            Vector3 pos = sb.transform.position;
+            pos.z += i;
+            sb.transform.position = pos;
+            listMultiScore.Add(sb);
+
             if(ID == Define.MULTI_SCORE_LOCK_ID)
             {
                 ScoreBlockLock sbl = Instantiate(prefabScoreBlockLock, boardMultiScore);
                 sbl.ID = ID;
-                sbl.textMultiScore.text = "X" + 1 + MULTI_SCORE * ID;
+                sbl.textMultiScore.text = multiScoreText;
                 sbl.matActive = listMatMultiSocre[i];
                 sbl.UpdateActive();
                 Vector3 posSBL = sbl.transform.position;
@@ -39,15 +50,6 @@ public class LevelManager : MonoBehaviour
                 sbl.transform.position = posSBL;
             }
             
-            ScoreBlock sb = Instantiate(prefabScoreBlock, boardMultiScore);
-            sb.ID = ID;
-            string multiScore = "X" + 1 + MULTI_SCORE * ID;
-            sb.SetTextMultiScore(multiScore);
-            sb.matActive = listMatMultiSocre[i];
-            Vector3 pos = sb.transform.position;
-            pos.z += i;
-            sb.transform.position = pos;
-            listMultiScore.Add(sb);
         }
         boardMultiScore.gameObject.SetActive(false);
     }

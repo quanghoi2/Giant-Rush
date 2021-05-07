@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     float verticalVelocity = -10f;
     private float _movementForce = 10f;
     [SerializeField]
-    private PLAYER_STATE playerState = PLAYER_STATE.READY;
+    private PLAYER_STATE playerState = PLAYER_STATE.NONE;
     private string mAnimName;
     private Timer timerControl = new Timer();
 
@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        SetState(PLAYER_STATE.READY);
+        //SetState(PLAYER_STATE.READY);
     }
 
     private void Update()
@@ -131,7 +131,7 @@ public class Player : MonoBehaviour
                     {
                         GameManager.Instance.State = STATE.PRE_FIGHT;
                         CameraMgr.Instance.UpdateCamera();
-                        AnimPlay(CHAR_ANIM.READY_HIT);
+                        AnimPlay(CHAR_ANIM.IDLE);
                     }
                 }
                 if ( distance <= 0.1f)
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.READY_HIT:
-                if(GameManager.Instance.playerState == PLAYER_STATE.READY_HIT && GameManager.Instance.bossState == BOSS_STATE.READY_HIT)
+                if(GameManager.Instance.playerState == PLAYER_STATE.READY_HIT && GameManager.Instance.bossState == PLAYER_STATE.READY_HIT)
                 {
                     if(Input.GetMouseButtonDown(0))
                     {
@@ -169,10 +169,10 @@ public class Player : MonoBehaviour
                 {
                     switch(GameManager.Instance.bossState)
                     {
-                        case BOSS_STATE.FINISH_HIT:
+                        case PLAYER_STATE.FINISH_HIT:
                             SetState(PLAYER_STATE.HITTED);
                             break;
-                        case BOSS_STATE.FINISH_KICK:
+                        case PLAYER_STATE.FINISH_KICK:
                             SetState(PLAYER_STATE.KNOCK_OUT);
                             break;
                     }
@@ -221,11 +221,19 @@ public class Player : MonoBehaviour
                     SetState(PLAYER_STATE.GAME_OVER);
                 }
                 break;
+
+            case PLAYER_STATE.GAME_OVER:
+                timerControl.Update(Time.deltaTime);
+                if(timerControl.JustFinished())
+                {
+                    GameManager.Instance.ReStartLevel();
+                }
+                break;
         }
         
     }
 
-    private void SetState(PLAYER_STATE state)
+    public void SetState(PLAYER_STATE state)
     {
         playerState = state;
         GameManager.Instance.playerState = state;
@@ -233,6 +241,8 @@ public class Player : MonoBehaviour
         {
             case PLAYER_STATE.READY:
                 AnimPlay(CHAR_ANIM.IDLE);
+                mCharColor = CHAR_COLOR.GREEN;
+                UpdateColor(mCharColor);
                 break;
 
             case PLAYER_STATE.CONTROL:
@@ -293,6 +303,10 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.KNOCK_OUT:
                 GameManager.Instance.playerState = PLAYER_STATE.KNOCK_OUT;
                 AnimPlay(CHAR_ANIM.KNOCK_OUT);
+                break;
+
+            case PLAYER_STATE.GAME_OVER:
+                timerControl.SetDuration(Define.TIME_DELAY_END_GAME);
                 break;
         }
     }

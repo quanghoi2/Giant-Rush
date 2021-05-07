@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CameraMotor : MonoBehaviour
 {
-    public Transform lookAt;
-
     //private Vector3 targetPos;
     //private Vector3 StartPos = new Vector3(2, 4, -8.5f);
     //private Vector3 StartRot = new Vector3(13, -8, 0);
@@ -19,7 +17,7 @@ public class CameraMotor : MonoBehaviour
         switch(GameManager.Instance.State)
         {
             case STATE.PLAY_GAME:
-                moveVector = lookAt.position + PlayPos + moveOffset;
+                moveVector = GameManager.Instance.mPlayer.transform.position + PlayPos + moveOffset;
                 moveVector.x = PlayPos.x;
                 moveVector.y = PlayPos.y;
                 transform.position = Vector3.Lerp(transform.position, moveVector, Time.deltaTime);

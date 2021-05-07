@@ -1,20 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
-    private STATE mState = STATE.READY;
+    private STATE mState = STATE.LOAD;
 
     public PLAYER_STATE playerState;
-    public BOSS_STATE bossState;
+    public PLAYER_STATE bossState;
     [HideInInspector]
     public int mMultiScore;
+    public Player mPlayer;
 
     private int mBossHp = 4;
     private int mPlayerHp = 4;
 
     const int LAST_HIT = 1;
+
+    private void Update()
+    {
+        UpdateState();
+    }
 
     public STATE State
     {
@@ -49,11 +56,11 @@ public class GameManager : Singleton<GameManager>
         BossHP -= 1;
         if (BossHP == 0)
         {
-           bossState = BOSS_STATE.KNOCK_OUT;
+           bossState = PLAYER_STATE.KNOCK_OUT;
         }
         else
         {
-            bossState = BOSS_STATE.HITTED;
+            bossState = PLAYER_STATE.HITTED;
         }
     }
 
@@ -78,5 +85,41 @@ public class GameManager : Singleton<GameManager>
     public bool IsBossLastHit()
     {
         return mBossHp == LAST_HIT;
+    }
+
+    public void ReStartLevel()
+    {
+        CameraMgr.Instance.SetState(STATE.PRE_LOAD);
+        LevelContainer.Instance.SetState(STATE.PRE_LOAD);
+        mState = STATE.LOAD;
+    }
+
+    public void SetState(STATE state)
+    {
+        mState = state;
+        switch(state)
+        {
+            case STATE.READY:
+                if(!mPlayer.gameObject.activeSelf)
+                {
+                    mPlayer.gameObject.SetActive(true);
+                }
+                mPlayer.transform.position = Vector3.zero;
+                mPlayer.SetState(PLAYER_STATE.READY);
+                break;
+        }
+    }
+
+    private void UpdateState()
+    {
+        switch(mState)
+        {
+            case STATE.LOAD:
+                if(CameraMgr.Instance.State == STATE.READY && LevelContainer.Instance.State == STATE.READY)
+                {
+                    SetState(STATE.READY);
+                }
+                break;
+        }
     }
 }

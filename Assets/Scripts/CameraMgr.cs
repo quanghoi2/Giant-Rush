@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMgr : MonoBehaviour
-
 {
     public static CameraMgr Instance;
-    public List<GameObject> listCamera;
+    public Transform cameraContainer;
 
     [HideInInspector]
     public Timer timerControl = new Timer();
 
+    private List<GameObject> listCamera;
     private int cameraIndex = 0;
+    [SerializeField]
+    private STATE mState = STATE.NONE;
+
+    const string PRE_FIX = "CameraLevel_";
 
     private void Awake()
     {
@@ -20,11 +24,7 @@ public class CameraMgr : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 0; i < listCamera.Count; i++)
-        {
-            listCamera[i].SetActive(i == 0);
-
-        }
+        SetState(STATE.PRE_LOAD);        
     }
 
     void Update()
@@ -43,6 +43,8 @@ public class CameraMgr : MonoBehaviour
             case STATE.END_RUN:
                 break;
         }
+
+        UpdateState();
     }
 
     public void UpdateCamera()
@@ -50,5 +52,68 @@ public class CameraMgr : MonoBehaviour
         listCamera[cameraIndex].SetActive(false);
         cameraIndex += 1;
         listCamera[cameraIndex].SetActive(true);
+    }
+
+    public STATE State
+    {
+        get { return mState; }
+        set { mState = value; }
+    }
+
+    public void SetState(STATE state)
+    {
+        mState = state;
+        switch(state)
+        {
+            case STATE.PRE_LOAD:
+                foreach(Transform child in cameraContainer)
+                {
+                    Destroy(child.gameObject);
+                }
+                break;
+            case STATE.LOAD:
+                int level = 2;
+                string namePrefabCam = PRE_FIX;
+                if(level < 10)
+                {
+                    namePrefabCam += "0" + level;
+                }
+                else
+                {
+                    namePrefabCam += level;
+                }
+                GameObject prefabCam = Resources.Load(namePrefabCam) as GameObject;
+                GameObject camLevel = Instantiate(prefabCam, cameraContainer);
+                break;
+
+            case STATE.READY:
+                listCamera = cameraContainer.GetChild(0).GetComponent<CameraLevel>().listCamera;
+                for (int i = 0; i < listCamera.Count; i++)
+                {
+                    listCamera[i].SetActive(i == 0);
+
+                }
+                break;
+        }
+    }
+
+    private void UpdateState()
+    {
+        switch(mState)
+        {
+            case STATE.PRE_LOAD:
+                if(cameraContainer.childCount == 0)
+                {
+                    SetState(STATE.LOAD);
+                }
+                break;
+
+            case STATE.LOAD:
+                if(cameraContainer.childCount > 0)
+                {
+                    SetState(STATE.READY);
+                }
+                break;
+        }
     }
 }
