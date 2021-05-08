@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 
     const float MAX_ROTATION_Y = 0.15f;
     const float MAX_X = 3f;
-    const float SCALE_UNIT = 0.1f;        
+    const float SCALE_UNIT = 0.05f;        
 
     private void Start()
     {
@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
                 //transform.position = Vector3.Lerp(transform.position, LevelManager.Instance.transPlayer.position, mSpeedEndRun * Time.deltaTime);
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, mRotSpeed * Time.deltaTime);
                 float distance = Vector3.Distance(transform.position, LevelManager.Instance.transPlayer.position);
-                if (distance <= 0.5f)
+                if (distance <= Define.DISTANCE_TARGET_2)
                 {
                     if(GameManager.Instance.State != STATE.PRE_FIGHT)
                     {
@@ -134,11 +134,11 @@ public class Player : MonoBehaviour
                         AnimPlay(CHAR_ANIM.IDLE);
                     }
                 }
-                if ( distance <= 0.1f)
+                if ( distance <= Define.DISTANCE_TARGET_1)
                 {
                     transform.position = LevelManager.Instance.transPlayer.position;
                     SetState(PLAYER_STATE.PRE_READY_HIT);
-                    GameManager.Instance.State = STATE.FIGHT;
+                    GameManager.Instance.State = STATE.READY_FIGHT;
                 }
                 break;
 
@@ -146,6 +146,7 @@ public class Player : MonoBehaviour
                 timerControl.Update(Time.deltaTime);
                 if(timerControl.JustFinished())
                 {
+                    GameManager.Instance.State = STATE.FIGHT;
                     SetState(PLAYER_STATE.READY_HIT);
                 }
                 break;
@@ -226,7 +227,7 @@ public class Player : MonoBehaviour
                 timerControl.Update(Time.deltaTime);
                 if(timerControl.JustFinished())
                 {
-                    GameManager.Instance.ReStartLevel();
+                    SetState(PLAYER_STATE.RESTART_LEVEL);                    
                 }
                 break;
         }
@@ -302,11 +303,17 @@ public class Player : MonoBehaviour
 
             case PLAYER_STATE.KNOCK_OUT:
                 GameManager.Instance.playerState = PLAYER_STATE.KNOCK_OUT;
+                GameManager.Instance.State = STATE.BOSS_KNOCK_OUT;
                 AnimPlay(CHAR_ANIM.KNOCK_OUT);
                 break;
 
             case PLAYER_STATE.GAME_OVER:
+                GameManager.Instance.State = STATE.GAME_OVER;
                 timerControl.SetDuration(Define.TIME_DELAY_END_GAME);
+                break;
+
+            case PLAYER_STATE.RESTART_LEVEL:
+                GameManager.Instance.ReStartLevel();
                 break;
         }
     }

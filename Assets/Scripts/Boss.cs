@@ -59,7 +59,7 @@ public class Boss : MonoBehaviour
         switch(bossState)
         {
             case PLAYER_STATE.READY:
-                if(GameManager.Instance.State == STATE.FIGHT)
+                if(GameManager.Instance.State == STATE.READY_FIGHT)
                 {
                     SetState(PLAYER_STATE.PRE_READY_HIT);                    
                 }
@@ -119,6 +119,12 @@ public class Boss : MonoBehaviour
                         indexScore++;
                     }
                 }
+
+                float distance = Vector3.Distance(transform.position, targetMultiScorePos);
+                if(distance <= Define.DISTANCE_TARGET_1)
+                {
+                    SetState(PLAYER_STATE.GAME_WIN);
+                }
                 break;
 
             case PLAYER_STATE.HIT:
@@ -147,6 +153,15 @@ public class Boss : MonoBehaviour
                 if(!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.KICK))
                 {
                     SetState(PLAYER_STATE.READY_HIT);
+                }
+                break;
+
+            case PLAYER_STATE.GAME_WIN:
+                GameManager.Instance.State = STATE.GAME_WIN;
+                timerControl.Update(Time.deltaTime);
+                if(timerControl.JustFinished())
+                {
+                    SetState(PLAYER_STATE.NEXT_LEVEL);
                 }
                 break;
         }
@@ -210,6 +225,14 @@ public class Boss : MonoBehaviour
             case PLAYER_STATE.FINISH_KICK:
                 GameManager.Instance.bossState = PLAYER_STATE.FINISH_KICK;
                 GameManager.Instance.PlayerHitted();
+                break;
+
+            case PLAYER_STATE.GAME_WIN:
+                timerControl.SetDuration(Define.TIME_DELAY_END_GAME);
+                break;
+
+            case PLAYER_STATE.NEXT_LEVEL:
+                GameManager.Instance.NextLevel();
                 break;
         }
     }

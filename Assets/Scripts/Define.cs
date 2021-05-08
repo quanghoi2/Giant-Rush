@@ -12,6 +12,11 @@ public static class Define
     public const float TIME_PRE_READY_HIT = 2f;
     public const float TIME_FOLLOW_BOSS_KNOCK_OUT = 1f;
     public const float TIME_DELAY_END_GAME = 2f;
+    public const float DISTANCE_TARGET_1 = 0.1f;
+    public const float DISTANCE_TARGET_2 = 0.5f;
+
+    public const int MAX_HP = 4;
+    public const int DAME_UNIT = 1;
 }
 
 public enum CHAR_COLOR
@@ -50,10 +55,14 @@ public enum STATE
     PLAY_GAME,
     END_RUN,
     PRE_FIGHT,
+    READY_FIGHT,
     FIGHT,
+    PLAYER_KNOCK_OUT,
     BOSS_KNOCK_OUT,
     PRE_LOAD,
     LOAD,
+    GAME_OVER,
+    GAME_WIN,
 }
 
 public enum PLAYER_STATE
@@ -73,4 +82,7 @@ public enum PLAYER_STATE
     FINISH_KICK,
     KNOCK_OUT,
     GAME_OVER,
+    GAME_WIN,
+    RESTART_LEVEL,
+    NEXT_LEVEL,
 }

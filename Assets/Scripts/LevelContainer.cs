@@ -44,7 +44,7 @@ public class LevelContainer : MonoBehaviour
                 }
                 break;
             case STATE.LOAD:
-                int level = 2;
+                int level = ProfileMgr.Instance.Level;
                 string nameLevel = PREFIX;
                 if(level < 10)
                 {
@@ -55,7 +55,10 @@ public class LevelContainer : MonoBehaviour
                     nameLevel += level;
                 }
                 GameObject prefabLevel = Resources.Load(nameLevel) as GameObject;
-                Instantiate(prefabLevel, transform);
+                if(prefabLevel != null)
+                {
+                    Instantiate(prefabLevel, transform);
+                }
                 break;
         }
     }

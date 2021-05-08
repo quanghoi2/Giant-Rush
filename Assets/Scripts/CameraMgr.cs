@@ -72,7 +72,7 @@ public class CameraMgr : MonoBehaviour
                 }
                 break;
             case STATE.LOAD:
-                int level = 2;
+                int level = ProfileMgr.Instance.Level;
                 string namePrefabCam = PRE_FIX;
                 if(level < 10)
                 {
@@ -83,7 +83,10 @@ public class CameraMgr : MonoBehaviour
                     namePrefabCam += level;
                 }
                 GameObject prefabCam = Resources.Load(namePrefabCam) as GameObject;
-                GameObject camLevel = Instantiate(prefabCam, cameraContainer);
+                if(prefabCam != null)
+                {
+                    GameObject camLevel = Instantiate(prefabCam, cameraContainer);
+                }
                 break;
 
             case STATE.READY:
@@ -102,7 +105,8 @@ public class CameraMgr : MonoBehaviour
         switch(mState)
         {
             case STATE.PRE_LOAD:
-                if(cameraContainer.childCount == 0)
+                cameraIndex = 0;
+                if (cameraContainer.childCount == 0)
                 {
                     SetState(STATE.LOAD);
                 }

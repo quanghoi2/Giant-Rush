@@ -13,10 +13,14 @@ public class GameManager : Singleton<GameManager>
     public int mMultiScore;
     public Player mPlayer;
 
-    private int mBossHp = 4;
-    private int mPlayerHp = 4;
+    private int mBossHp = Define.MAX_HP;
+    private int mPlayerHp = Define.MAX_HP;
+    private Vector3 originalScale;
 
-    const int LAST_HIT = 1;
+    private void Start()
+    {
+        originalScale = mPlayer.transform.localScale;
+    }
 
     private void Update()
     {
@@ -53,7 +57,7 @@ public class GameManager : Singleton<GameManager>
 
     public void BossHitted()
     {
-        BossHP -= 1;
+        BossHP -= Define.DAME_UNIT;
         if (BossHP == 0)
         {
            bossState = PLAYER_STATE.KNOCK_OUT;
@@ -66,7 +70,7 @@ public class GameManager : Singleton<GameManager>
 
     public void PlayerHitted()
     {
-        PlayerHP -= 1;
+        PlayerHP -= Define.DAME_UNIT;
         if (PlayerHP == 0)
         {
             playerState = PLAYER_STATE.KNOCK_OUT;
@@ -79,16 +83,25 @@ public class GameManager : Singleton<GameManager>
 
     public bool IsPlayerLastHit()
     {
-        return mPlayerHp == LAST_HIT;
+        return mPlayerHp == Define.DAME_UNIT;
     }
 
     public bool IsBossLastHit()
     {
-        return mBossHp == LAST_HIT;
+        return mBossHp == Define.DAME_UNIT;
     }
 
     public void ReStartLevel()
     {
+        CameraMgr.Instance.SetState(STATE.PRE_LOAD);
+        LevelContainer.Instance.SetState(STATE.PRE_LOAD);
+        mState = STATE.LOAD;
+    }
+
+    public void NextLevel()
+    {
+        ProfileMgr.Instance.Level += 1;
+        ProfileMgr.Instance.SaveProfile();
         CameraMgr.Instance.SetState(STATE.PRE_LOAD);
         LevelContainer.Instance.SetState(STATE.PRE_LOAD);
         mState = STATE.LOAD;
@@ -104,7 +117,11 @@ public class GameManager : Singleton<GameManager>
                 {
                     mPlayer.gameObject.SetActive(true);
                 }
+                mPlayer.transform.localScale = originalScale;
                 mPlayer.transform.position = Vector3.zero;
+                //mPlayer.transform.position = new Vector3(0, 0, 130);
+                mPlayerHp = Define.MAX_HP;
+                mBossHp = Define.MAX_HP;
                 mPlayer.SetState(PLAYER_STATE.READY);
                 break;
         }
