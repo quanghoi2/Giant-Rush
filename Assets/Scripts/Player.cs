@@ -217,9 +217,13 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.KNOCK_OUT:
-                if (!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.KNOCK_OUT))
+                timerControl.Update(Time.deltaTime);
+                if (timerControl.IsDone())
                 {
-                    SetState(PLAYER_STATE.GAME_OVER);
+                    if (!GameManager.Instance.AnimatorIsPlaying(mAnimator, CHAR_ANIM.KNOCK_OUT))
+                    {
+                        SetState(PLAYER_STATE.GAME_OVER);
+                    }
                 }
                 break;
 
@@ -303,8 +307,9 @@ public class Player : MonoBehaviour
 
             case PLAYER_STATE.KNOCK_OUT:
                 GameManager.Instance.playerState = PLAYER_STATE.KNOCK_OUT;
-                GameManager.Instance.State = STATE.BOSS_KNOCK_OUT;
+                GameManager.Instance.State = STATE.PLAYER_KNOCK_OUT;
                 AnimPlay(CHAR_ANIM.KNOCK_OUT);
+                timerControl.SetDuration(Define.TIME_DELAY_UPDATE);
                 break;
 
             case PLAYER_STATE.GAME_OVER:

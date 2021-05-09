@@ -1,4 +1,6 @@
-﻿public class Timer
+﻿using UnityEngine;
+
+public class Timer
 {
     float timer	= 0;
     float duration = 0;

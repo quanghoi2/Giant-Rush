@@ -14,6 +14,7 @@ public static class Define
     public const float TIME_DELAY_END_GAME = 2f;
     public const float DISTANCE_TARGET_1 = 0.1f;
     public const float DISTANCE_TARGET_2 = 0.5f;
+    public const float TIME_DELAY_UPDATE = 0.01f;
 
     public const int MAX_HP = 4;
     public const int DAME_UNIT = 1;
@@ -45,6 +46,8 @@ public static class TAG
     public const string DIAMOND = "Diamond";
     public const string BOSS = "Boss";
     public const string END_RUN = "EndRun";
+    public const string WALL = "Wall";
+    public const string PLAYER = "Player";
 }
 
 public enum STATE

@@ -17,7 +17,8 @@ public class LevelContainer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetState(STATE.PRE_LOAD);
+        //SetState(STATE.PRE_LOAD);
+        SetState(STATE.READY);
     }
 
     // Update is called once per frame

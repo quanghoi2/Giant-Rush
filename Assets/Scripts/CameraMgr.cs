@@ -24,7 +24,8 @@ public class CameraMgr : MonoBehaviour
 
     private void Start()
     {
-        SetState(STATE.PRE_LOAD);        
+        //SetState(STATE.PRE_LOAD);        
+        SetState(STATE.READY);        
     }
 
     void Update()

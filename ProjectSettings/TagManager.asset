@@ -10,6 +10,8 @@ TagManager:
   - Diamond
   - EndRun
   - Boss
+  - Wall
+  - Mace
   layers:
   - Default
   - TransparentFX
