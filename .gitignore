@@ -56,7 +56,6 @@ sysinfo.txt
 
 # Builds
 *.aab
-*.apk
 *.obb
 *.unitypackage
 
