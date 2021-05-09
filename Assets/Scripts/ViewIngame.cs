@@ -11,13 +11,9 @@ public class ViewIngame : MonoBehaviour
     public GameObject mObjBossHP;
     public TextMeshProUGUI mTextLevel;
 
-    const string PREFIX = "Level ";
+    float maxMouseX;
 
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //    UpdateTextLevel();
-    //}
+    const string PREFIX = "Level ";
 
     // Update is called once per frame
     void Update()

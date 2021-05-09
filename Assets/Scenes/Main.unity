@@ -1817,6 +1817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3d73f9791f28b048ab96ee5e54339eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mState: 11
   playerState: 0
   bossState: 0
   mMultiScore: 0
@@ -2262,12 +2263,16 @@ PrefabInstance:
       value: 0.0143708885
       objectReference: {fileID: 0}
     - target: {fileID: 166185878054750862, guid: cd84ce5f25cfb254f943aab90417351c, type: 3}
+      propertyPath: mSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 166185878054750862, guid: cd84ce5f25cfb254f943aab90417351c, type: 3}
       propertyPath: mAnimator
       value: 
       objectReference: {fileID: 1138476696}
     - target: {fileID: 166185878054750862, guid: cd84ce5f25cfb254f943aab90417351c, type: 3}
       propertyPath: mRotSpeed
-      value: 1000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 338165208468463549, guid: cd84ce5f25cfb254f943aab90417351c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2359,7 +2364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 415686114504634454, guid: cd84ce5f25cfb254f943aab90417351c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 415686114504634454, guid: cd84ce5f25cfb254f943aab90417351c, type: 3}
       propertyPath: m_LocalPosition.z

@@ -12,13 +12,15 @@ public class Player : MonoBehaviour
     private CHAR_COLOR mCharColor = CHAR_COLOR.GREEN;
     private Vector3 mMoveVector;
     private Vector3 mRotVector;
+
+    [SerializeField]
     private float mSpeed = 5f;
     private float mSpeedEndRun = 3f;
     [SerializeField]
-    private float mRotSpeed = 500f;
+    private float mRotSpeed = 50f;
     [SerializeField]
     private bool isRotation = false;
-    private float mSpeedControl = 25f;
+    private float mSpeedControl = 1.5f;
     float verticalVelocity = -10f;
     private float _movementForce = 10f;
     [SerializeField]
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
 
     const float MAX_ROTATION_Y = 0.15f;
     const float MAX_X = 3f;
+    const float MAX_MOUSE_X = 5f;
     const float SCALE_UNIT = 0.05f;        
 
     private void Start()
@@ -50,9 +53,9 @@ public class Player : MonoBehaviour
         switch (playerState)
         {
             case PLAYER_STATE.READY:
-                if(Input.GetMouseButtonDown(0))
+                if(Input.GetMouseButtonDown(0) && GameManager.Instance.State == STATE.READY)
                 {
-                    SetState(PLAYER_STATE.CONTROL);
+                    SetState(PLAYER_STATE.START);
                 }
 
                 if(Input.GetKeyDown(KeyCode.Space))
@@ -98,17 +101,44 @@ public class Player : MonoBehaviour
                 }
                 break;
 
+            case PLAYER_STATE.START:
+                mMoveVector = Vector3.zero;
+                mMoveVector.z = mSpeed;
+                mMoveVector.x = Input.GetAxisRaw("Horizontal") * mSpeed;
+                mRotVector = Vector3.zero;
+                mMoveVector.y = verticalVelocity;
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, mRotSpeed * Time.deltaTime);
+                UpdateMove();
+                if (Input.GetMouseButtonUp(0))
+                {
+                    SetState(PLAYER_STATE.RUN);
+                } else
+                {
+                    timerControl.Update(Time.deltaTime);
+                    if(timerControl.JustFinished())
+                    {
+                        SetState(PLAYER_STATE.CONTROL);
+                    }
+                }
+                break;
+
             case PLAYER_STATE.CONTROL:
                 mMoveVector = Vector3.zero;
                 mMoveVector.x = Input.GetAxisRaw("Horizontal") * mSpeed;
                 mMoveVector.z = mSpeed;
                 mRotVector = Vector3.zero;
                 mMoveVector.y = verticalVelocity;
-                mMoveVector.x = Input.GetAxis("Mouse X") * mSpeedControl;
-                mRotVector.y = Input.GetAxis("Mouse X") * mRotSpeed * Time.deltaTime;
+                mMoveVector.x = Input.GetAxis("Mouse X");
+                mMoveVector.x = Mathf.Clamp(mMoveVector.x, -MAX_MOUSE_X, MAX_MOUSE_X);
+                mMoveVector.x = mMoveVector.x * mSpeedControl;
+
+                mRotVector.y = Input.GetAxis("Mouse X");
+                mRotVector.y = Mathf.Clamp(mMoveVector.x, -MAX_MOUSE_X, MAX_MOUSE_X);
+                mRotVector.y = mRotVector.y * mRotSpeed * Time.deltaTime;
 
                 transform.Rotate(mRotVector);
-
+                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, mRotSpeed * Time.deltaTime);
                 Quaternion quaternion = transform.rotation;
                 quaternion.y = Mathf.Clamp(quaternion.y, -MAX_ROTATION_Y, MAX_ROTATION_Y);
                 transform.rotation = quaternion;
@@ -250,21 +280,17 @@ public class Player : MonoBehaviour
                 UpdateColor(mCharColor);
                 break;
 
-            case PLAYER_STATE.CONTROL:
+            case PLAYER_STATE.START:
                 mAnimator.Play(CHAR_ANIM.RUNNING);
-                if(GameManager.Instance.State == STATE.READY)
-                {
-                    GameManager.Instance.State = STATE.START_GAME;
-                    CameraMgr.Instance.timerControl.SetDuration(Define.TIME_CAMERA_START);
-                    CameraMgr.Instance.UpdateCamera();
-                }
-                else if (GameManager.Instance.State == STATE.START_GAME)
-                {
-                    GameManager.Instance.State = STATE.PLAY_GAME;
-                }
+                GameManager.Instance.State = STATE.START_GAME;
+                CameraMgr.Instance.timerControl.SetDuration(Define.TIME_CAMERA_START);
+                CameraMgr.Instance.UpdateCamera();
+                timerControl.SetDuration(Define.TIME_START_RUN);
+                break;
+
+            case PLAYER_STATE.CONTROL:
                 break;
             case PLAYER_STATE.END_RUN:
-
                 break;
 
             case PLAYER_STATE.PRE_READY_HIT:

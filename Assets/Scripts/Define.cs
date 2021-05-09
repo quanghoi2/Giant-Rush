@@ -15,6 +15,7 @@ public static class Define
     public const float DISTANCE_TARGET_1 = 0.1f;
     public const float DISTANCE_TARGET_2 = 0.5f;
     public const float TIME_DELAY_UPDATE = 0.01f;
+    public const float TIME_START_RUN = 0.5f;
 
     public const int MAX_HP = 4;
     public const int DAME_UNIT = 1;
@@ -72,6 +73,7 @@ public enum PLAYER_STATE
 {
     NONE,
     READY,
+    START,
     RUN,
     CONTROL,
     END_RUN,

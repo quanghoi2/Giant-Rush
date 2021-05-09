@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField]
     private STATE mState = STATE.LOAD;
 
     public PLAYER_STATE playerState;
