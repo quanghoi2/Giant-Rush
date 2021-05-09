@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ViewIngame : MonoBehaviour
 {
@@ -8,11 +9,15 @@ public class ViewIngame : MonoBehaviour
     public GameObject mObjIndicatorTap;
     public GameObject mObjPlayerHP;
     public GameObject mObjBossHP;
+    public TextMeshProUGUI mTextLevel;
+
+    const string PREFIX = "Level ";
+
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    //void Start()
+    //{
+    //    UpdateTextLevel();
+    //}
 
     // Update is called once per frame
     void Update()
@@ -22,6 +27,7 @@ public class ViewIngame : MonoBehaviour
             case STATE.READY:
                 if(!mObjIndicator.activeSelf)
                 {
+                    UpdateTextLevel();
                     mObjIndicator.SetActive(true);
                 }
                 break;
@@ -69,5 +75,11 @@ public class ViewIngame : MonoBehaviour
     private void UpdateBossHP()
     {
         mObjBossHP.GetComponent<HpControl>().UpdateHP(GameManager.Instance.BossHP);
+    }
+
+    public void UpdateTextLevel()
+    {
+        mTextLevel.gameObject.SetActive(true);
+        mTextLevel.text = PREFIX + ProfileMgr.Instance.Level;
     }
 }

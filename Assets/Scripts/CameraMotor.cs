@@ -19,7 +19,7 @@ public class CameraMotor : MonoBehaviour
             case STATE.PLAY_GAME:
                 moveVector = GameManager.Instance.mPlayer.transform.position + PlayPos + moveOffset;
                 moveVector.x = PlayPos.x;
-                moveVector.y = PlayPos.y;
+                //moveVector.y = PlayPos.y;
                 transform.position = Vector3.Lerp(transform.position, moveVector, Time.deltaTime);
                 break;
         }
